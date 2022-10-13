@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import { prisma } from "../lib/prisma";
 
 const JOBS = [
@@ -6,6 +7,10 @@ const JOBS = [
   "Full-stack Developer",
   "DevOps",
 ];
+
+Array.from({ length: 100 }).forEach(() => {
+  JOBS.push(faker.name.jobTitle());
+});
 
 async function main() {
   console.info("Creating jobs...");

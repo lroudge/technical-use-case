@@ -46,6 +46,14 @@ typed.
 I had trouble with the `percentile()` method that returns either `number[]` or `number[][]`, so I had to unfortunately
 typecast it to `number[]`.
 
+I wanted to test the robustness of my app by inserting bigger datasets in the database, using faker to generate fake job
+names,
+but the seed command failed when trying to insert > 1000 jobs :sad:
+
+I got both these errors:
+`Timed out fetching a new connection from the connection pool.`
+`Error: Command was killed with SIGABRT (Aborted): ts-node --compiler-options {"module":"CommonJS"} prisma/seed.ts`
+
 ## :four: Make it pretty (approximately 2 hours)
 
 This was by far the most tedious part. I am not a designer even though I try to use common sense and minimalistic
@@ -86,3 +94,5 @@ Obviously a lot of things could be added to this use case, here are a few off th
 * Calculate more stats, and maybe add the possibility to choose the percentiles to display
 * Make it more responsive, more accessible and better looking :smile:
 * Design a real select dropdown instead of using native html `list` for the input
+* Rework the seed script to insert much more data into the database with Prisma, maybe using transactions
+* Work on a pagination system to fetch jobs in chunks instead of all of them
