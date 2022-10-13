@@ -12,7 +12,9 @@ export default async function handler(
     where: { jobId: Number(jobId) },
   });
 
-  const salaries = employees.map(({ salary }) => salary).sort((a, b) => a - b);
+  const salaries = employees
+    .map(({ salary }) => Math.round(salary / 100))
+    .sort((a, b) => a - b);
 
   const [p25Salary, medianSalary, p75Salary] = percentile(
     [25, 50, 75],

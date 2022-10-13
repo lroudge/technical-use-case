@@ -5,6 +5,7 @@
 html,
 body,
 #__next {
-  @apply h-full;
-  -webkit-font-smoothing: antialiased;
+    @apply h-full;
+    -webkit-font-smoothing: antialiased;
+    background-color: #f8fafc;
 }
