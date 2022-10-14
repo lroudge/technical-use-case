@@ -10,16 +10,16 @@ I am not going to copy all of this here, but I can share the conclusions I quick
 
 * We have a given list of **jobs** which are each linked to a list of **employees**, and we want to choose **1 job** and
   display its related **stats** that we can calculate from all its **employees** data.
-* That means the first step is to **fetch** all jobs and employees from Prisma
+* That means the first step is to **fetch** all jobs from Database
 * Then we need to create a **select input** to choose the job by its name
-* Then we need to **calculate stats** for this job and **display** them
+* Then we need to **fetch and calculate stats** for this job and **display** them in a clear way
 
 ## :two: Having an MVP (approximately 1 hour)
 
-For the **fetching** of the data, I decided to go with Next's API routes along with swr `useSWR` hook.
-This way I was able to handle loading and error state with early returns in the component.
-Other options included, but were not limited to, using Next's `getServerSideProps` or `getStaticProps` to pre fetch the
-data using prisma client directly in these methods.
+For the **fetching** of the jobs, I decided to go with Next's API routes along with swr `useSWR` hook.
+This way I was able to handle loading and error states with early returns in the component.
+Other options included, but were not limited to, using Next's `getServerSideProps` or `getStaticProps` to pre-fetch the
+data using Prisma client directly in these methods.
 But since I was already creating an API route to fetch and calculate the job stats, I thought it was simpler to put all
 db interactions in the API route handlers.
 
@@ -29,12 +29,12 @@ one `<option>` per job name, with the job id as the `key` attribute.
 Then for **fetching and calculating** the job stats once a job is selected, I created a custom API
 route `api/jobs/[jobId]` that will fetch all of the jobs employees and calculate the p25, p50 and p75 percentiles on all
 the salaries.
-I decided to use the library `percentile` so wouldn't have to handle the percentile calculations myself.
+I decided to use the library `percentile` so I wouldn't have to handle the percentile calculations myself.
 
-Inside the component, I simply used a useCallback hook in which I fetch the data with `axios` and store it in the
+Inside the component, I simply used a `useCallback` hook in which I fetch the data with `axios` and stored it in the
 component's state, and then display it underneath the input.
 
-:info: I had an issue here with using the job names as values for the datalist of the `input` but accessing the `key`
+:info: I had an issue here with using the job names as values for the datalist of the `input` and accessing the `key`
 attribute of the options to retrieve the job id and not name.
 For now I decided to simply find the id in the previously found `jobs` array with the name I got from the `input` value,
 even though it's not the most elegant.
@@ -54,6 +54,8 @@ I got both these errors:
 `Timed out fetching a new connection from the connection pool.`
 `Error: Command was killed with SIGABRT (Aborted): ts-node --compiler-options {"module":"CommonJS"} prisma/seed.ts`
 
+If I had more time I would rework this seed script to use transactions and improve performance.
+
 ## :four: Make it pretty (approximately 2 hours)
 
 This was by far the most tedious part. I am not a designer even though I try to use common sense and minimalistic
@@ -65,8 +67,8 @@ For this I decided to use the library `chart.js` which I had never used before. 
 documentation before understanding what I needed.
 
 I wanted to reproduce a "Floating Bar" graph like the one from
-the [Figures's Market Data Browser](https://app.figures.hr/try) but I struggled to go from regular bars (going from 0)
-to floating ones.
+the [Figures's Market Data Browser](https://app.figures.hr/try) but I struggled to go from regular bars (starting at 0)
+to floating ones (going from p25 to p75).
 The trick was to pass one array of data points per label to the `data` object. In my case, I only want one label at a
 time (the selected job).
 
@@ -90,6 +92,7 @@ I also switched the colors to use a softer grey as well as pink variants, becaus
 
 Obviously a lot of things could be added to this use case, here are a few off the top of my head:
 
+* Add tests (unit, snapshots...). I am not used to testing Next.js apps as of today...
 * Select multiple jobs to display at the same time, each with their own bar, to compare stats between them
 * Calculate more stats, and maybe add the possibility to choose the percentiles to display
 * Make it more responsive, more accessible and better looking :smile:

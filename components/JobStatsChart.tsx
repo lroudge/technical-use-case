@@ -6,6 +6,8 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import { JobStats } from "../lib/types";
 
 ChartJS.register(ChartDataLabels);
+
+// This is needed in order to have a smooth tooltip positioned where the cursor is and following it
 Tooltip.positioners.custom = function (elements, position) {
   return {
     x: position.x,
@@ -22,14 +24,13 @@ export const JobStatsChart: React.FC = ({
 }) => {
   const labels = ["Salaries range from p25 to p75"];
   const data = {
-    labels: [...labels],
+    labels,
     datasets: [
       {
         label: jobName,
-        borderColor: "rgb(255, 230, 238, 0.5)",
+        borderColor: "rgb(255, 153, 185, 0.5)",
         backgroundColor: "rgb(255, 153, 185, 0.5)",
-        categoryPercentage: 1.0,
-        barPercentage: 0.5,
+        barPercentage: 0.7,
         borderWidth: 2,
         borderRadius: 5,
         hidden: jobStats === undefined || jobName === undefined,
@@ -92,13 +93,13 @@ export const JobStatsChart: React.FC = ({
         displayColors: false,
         callbacks: {
           title: () => jobName,
-          label: (context) => {
-            return [
-              `Sample size: ${jobStats?.sampleSize} employees`,
-              `P75 salary: ${jobStats?.p75Salary} €`,
-              `Median salary: ${jobStats?.medianSalary} €`,
-              `P25 salary: ${jobStats?.p25Salary} €`,
-            ];
+          label: () => {
+            return jobStats ? [
+              `Sample size: ${jobStats.sampleSize} employees`,
+              `P75 salary: ${jobStats.p75Salary} €`,
+              `Median salary: ${jobStats.medianSalary} €`,
+              `P25 salary: ${jobStats.p25Salary} €`,
+            ] : [];
           },
         },
       },
